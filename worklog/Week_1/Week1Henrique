@@ -1,0 +1,13 @@
+### Setup
+
+First, I had to install the software and make it run. Since I'm using a Macbook, the suggested step-by-step didn't work as expected.  
+
+To install QEMU, I used Homebrew and that worked perfectly. However, to install ARM, I first downloaded the .pkg from the official website, and this created a folder in my Applications folder. I tried to run the Makefile then, but it couldn't find the arm files. 
+
+Even though I changed the path to allow it to find the arm files, it still wouldn't work. Therefore, what worked for me was a solution hidden in Stack Overflow that showed a package we could install with Homebrew that worked. 
+
+
+### Week 1, step 1
+
+I was able to compile  
+
