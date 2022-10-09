@@ -9,5 +9,20 @@ Even though I changed the path to allow it to find the arm files, it still would
 
 ### Week 1, step 1
 
-I was able to compile  
+The VAB (Versatile Application Board) has a arm926 CPU, and 1MB of memory. In the other hand, the VPB (Versatile Platform Board) 
+has a Cortex-a8 CPU and 32MB of memory.
 
+I was able to compile the VPB board, but the VAP didn't work for me initially. To make it work, I had to ... 
+
+A linker script is used to set up a memory map for the application, allocating RAM, disk space for I/O and registers. Then, the linker script sets up a memory map of this allocation that manages the chip. 
+
+The bss section, also called as Block Starting Symbol, is contains static variables that haven't an assigned value yet. Since the variables don't have an initial value, the object file size is smaller. Besides, since there is no data in the bss section, the compiler puts variables in the segment because they should be zero-initialized.
+
+In embedded systems, the bss section is mapped into memory, which is set to zero by the C run-time system before the main method begins to run. In C, static objects are initialized to zero or to null pointers. 
+
+Therefore, when the OS loads the executable, it gets the bss section size, allocates the necessary memory for it and initialize it with zeros.
+
+
+References: 
+https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedded_Development/embThe_linker_script.html
+https://en.wikipedia.org/wiki/.bss
