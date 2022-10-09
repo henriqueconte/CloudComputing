@@ -5,6 +5,10 @@
  * in assembly language, see the reset.s file.
  */
 
+int var1 = 0;
+int var2 = 0;
+int var3 = 4;
+
 void _start() {
   int i = 0;
   int count = 0;
