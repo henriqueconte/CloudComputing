@@ -118,9 +118,33 @@ memory-region: pci_mem
 This command shows a mapping of the system memory to different devices. 
 
 
+###### Week 1, step 2
+
+To debug with GDB, I spent almost three hours trying to understand how remote debugging works. The step-by-step that finally worked for me was:
+
+1. Open two terminal tabs
+2. In the first one, run "make debug"
+3. In the second one, run "sudo arm-none-eabi-gdb kernel.elf"
+4. In the second one, run "break _reset"
+5. In the second one, run "target remote:1234"
+6. In the second one, run "run"
+
+Then, in the second terminal, we can see that the execution will stop on the line 11 from the "reset" file. This line belongs to the "clear" section, which means we will first clean the memory, assign 0 to the memory addresses and then load the "main" file.
+
+If we remove the periodic "Zzzz" output, we won't know the program is still running. The output was there to show that the program is being executed, and it is printed everytime the variable "count" reaches 10000000. This gives us the impression that the program is sleeping for a second and then printing, but the program is actually continously running and adding 1 to the count value, and then printing "Zzzz" when count reaches 10000000.
+
+The symbol _stack_top is used to reference the top element of the stack. In our case, we are reserving memory for our C stack and then loading the C file (main) entry point. The stack growns downward, which means the top of the stack is at the end of the reserved memory region.
+
+We can verify in C that the stack is working properly by being able to execute the program without running out of memory. The "Zzzzz" print is useful for that, because if we are printing "Zzzzz" that means that everything is good with the stack. 
+
+However, if we call too many functions in C, we won't have enough memory in the stack region to run everything. This also happens if we declare way too big variables, like an array with 1 million of integers, we won't have memory in the data region.
+
+
 
 
 References: 
 https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedded_Development/embThe_linker_script.html
 https://en.wikipedia.org/wiki/.bss
 http://books.gigatux.nl/mirror/kerneldevelopment/0672327201/ch19lev1sec3.html
+https://www.geeksforgeeks.org/stack-top-c-stl/
+
