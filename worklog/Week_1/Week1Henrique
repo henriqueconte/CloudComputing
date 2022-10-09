@@ -22,7 +22,105 @@ In embedded systems, the bss section is mapped into memory, which is set to zero
 
 Therefore, when the OS loads the executable, it gets the bss section size, allocates the necessary memory for it and initialize it with zeros.
 
+###########################################
+
+Alignment refers to a piece of data's address location in memory. By having a 16-byte boundary, we are saying that the data memory address needs to divisible by 16. For example, 0x00010 would be 16-byte alligned, while 0x00011 wouldn't. The bss section is aligned on a 16-byte boundary because we zero 16-bytes at a time, as we can see in the ".clear" part from the reset.s file.
+
+By running the command info mtree with the VPB board, I got the following result:
+
+address-space: lsi-pci-io
+  0000000043000000-0000000142ffffff (prio 0, i/o): pci_io
+
+address-space: versatile_pci_host
+  0000000000000000-ffffffffffffffff (prio 0, i/o): bus master container
+
+address-space: cpu-memory-0
+address-space: memory
+address-space: pl080-downstream
+  0000000000000000-ffffffffffffffff (prio 0, i/o): system
+    0000000000000000-0000000001ffffff (prio 0, ram): versatile.ram
+    0000000010000000-0000000010000fff (prio 0, i/o): arm-sysctl
+    0000000010001000-0000000010001fff (prio 0, i/o): pci-vpb-regs
+    0000000010002000-0000000010002fff (prio 0, i/o): arm_sbcon_i2c
+    0000000010003000-0000000010003fff (prio 0, i/o): vpb-sic
+    0000000010004000-0000000010004fff (prio 0, i/o): pl041
+    0000000010005000-0000000010005fff (prio 0, i/o): pl181
+    0000000010006000-0000000010006fff (prio 0, i/o): pl050
+    0000000010007000-0000000010007fff (prio 0, i/o): pl050
+    0000000010009000-0000000010009fff (prio 0, i/o): pl011
+    000000001000b000-000000001000bfff (prio 0, i/o): pl181
+    0000000010010000-000000001001000f (prio 0, i/o): smc91c111-mmio
+    0000000010120000-0000000010120fff (prio 0, i/o): pl110
+    0000000010130000-0000000010130fff (prio 0, i/o): pl080
+    0000000010140000-0000000010140fff (prio 0, i/o): pl190
+    00000000101e2000-00000000101e2fff (prio 0, i/o): sp804
+    00000000101e3000-00000000101e3fff (prio 0, i/o): sp804
+    00000000101e4000-00000000101e4fff (prio 0, i/o): pl061
+    00000000101e5000-00000000101e5fff (prio 0, i/o): pl061
+    00000000101e6000-00000000101e6fff (prio 0, i/o): pl061
+    00000000101e7000-00000000101e7fff (prio 0, i/o): pl061
+    00000000101e8000-00000000101e8fff (prio 0, i/o): pl031
+    00000000101f1000-00000000101f1fff (prio 0, i/o): pl011
+    00000000101f2000-00000000101f2fff (prio 0, i/o): pl011
+    00000000101f3000-00000000101f3fff (prio 0, i/o): pl011
+    0000000034000000-0000000037ffffff (prio 0, romd): versatile.flash
+    0000000041000000-0000000041ffffff (prio 0, i/o): pci-vpb-selfconfig
+    0000000042000000-0000000042ffffff (prio 0, i/o): pci-vpb-config
+    0000000043000000-0000000142ffffff (prio 0, i/o): pci_io
+    0000000044000000-000000004fffffff (prio 0, i/o): alias pci-vbp-window @pci_mem 0000000000000000-000000000bffffff
+    0000000050000000-000000005fffffff (prio 0, i/o): alias pci-vbp-window @pci_mem 0000000000000000-000000000fffffff
+    0000000060000000-000000006fffffff (prio 0, i/o): alias pci-vbp-window @pci_mem 0000000000000000-000000000fffffff
+
+address-space: lsi53c895a
+  0000000000000000-ffffffffffffffff (prio 0, i/o): bus master container
+
+address-space: I/O
+  0000000000000000-000000000000ffff (prio 0, i/o): io
+
+memory-region: system
+  0000000000000000-ffffffffffffffff (prio 0, i/o): system
+    0000000000000000-0000000001ffffff (prio 0, ram): versatile.ram
+    0000000010000000-0000000010000fff (prio 0, i/o): arm-sysctl
+    0000000010001000-0000000010001fff (prio 0, i/o): pci-vpb-regs
+    0000000010002000-0000000010002fff (prio 0, i/o): arm_sbcon_i2c
+    0000000010003000-0000000010003fff (prio 0, i/o): vpb-sic
+    0000000010004000-0000000010004fff (prio 0, i/o): pl041
+    0000000010005000-0000000010005fff (prio 0, i/o): pl181
+    0000000010006000-0000000010006fff (prio 0, i/o): pl050
+    0000000010007000-0000000010007fff (prio 0, i/o): pl050
+    0000000010009000-0000000010009fff (prio 0, i/o): pl011
+    000000001000b000-000000001000bfff (prio 0, i/o): pl181
+    0000000010010000-000000001001000f (prio 0, i/o): smc91c111-mmio
+    0000000010120000-0000000010120fff (prio 0, i/o): pl110
+    0000000010130000-0000000010130fff (prio 0, i/o): pl080
+    0000000010140000-0000000010140fff (prio 0, i/o): pl190
+    00000000101e2000-00000000101e2fff (prio 0, i/o): sp804
+    00000000101e3000-00000000101e3fff (prio 0, i/o): sp804
+    00000000101e4000-00000000101e4fff (prio 0, i/o): pl061
+    00000000101e5000-00000000101e5fff (prio 0, i/o): pl061
+    00000000101e6000-00000000101e6fff (prio 0, i/o): pl061
+    00000000101e7000-00000000101e7fff (prio 0, i/o): pl061
+    00000000101e8000-00000000101e8fff (prio 0, i/o): pl031
+    00000000101f1000-00000000101f1fff (prio 0, i/o): pl011
+    00000000101f2000-00000000101f2fff (prio 0, i/o): pl011
+    00000000101f3000-00000000101f3fff (prio 0, i/o): pl011
+    0000000034000000-0000000037ffffff (prio 0, romd): versatile.flash
+    0000000041000000-0000000041ffffff (prio 0, i/o): pci-vpb-selfconfig
+    0000000042000000-0000000042ffffff (prio 0, i/o): pci-vpb-config
+    0000000043000000-0000000142ffffff (prio 0, i/o): pci_io
+    0000000044000000-000000004fffffff (prio 0, i/o): alias pci-vbp-window @pci_mem 0000000000000000-000000000bffffff
+    0000000050000000-000000005fffffff (prio 0, i/o): alias pci-vbp-window @pci_mem 0000000000000000-000000000fffffff
+    0000000060000000-000000006fffffff (prio 0, i/o): alias pci-vbp-window @pci_mem 0000000000000000-000000000fffffff
+
+memory-region: pci_mem
+  0000000000000000-00000000ffffffff (prio 0, i/o): pci_mem
+
+This command shows a mapping of the system memory to different devices. 
+
+
+
 
 References: 
 https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedded_Development/embThe_linker_script.html
 https://en.wikipedia.org/wiki/.bss
+http://books.gigatux.nl/mirror/kerneldevelopment/0672327201/ch19lev1sec3.html
