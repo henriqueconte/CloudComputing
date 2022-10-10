@@ -149,7 +149,6 @@ Besides, another approach is to use static code analysis tools. Those tools can,
 
 Last, it is also possible to provide a formal verification that the C program executes safely. In some companies, they use functional safety standards such as ISO 26262-6. However, the approach depends on the company needs, so there is not a unique way of ensuring safety. 
 
-
 The method kprintf is the same as a "printf" but on a kernel version. Since we don't have libC on bare-metal environment, we can't simply use "printf", thus kprintf was implemented. 
 
 
