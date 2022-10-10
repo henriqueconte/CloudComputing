@@ -139,7 +139,18 @@ We can verify in C that the stack is working properly by being able to execute t
 
 However, if we call too many functions in C, we won't have enough memory in the stack region to run everything. This also happens if we declare way too big variables, like an array with 1 million of integers, we won't have memory in the data region.
 
+Regarding the safety of C programs, it is important to mention that C is an unsafe programming language. If we execute an incorrect operation, the whole program becomes meaningless, having a undefined behavior. Since the compiler doesn't provide diagnostic for undefined behavior, we are susceptible to security vulnerabilities. 
 
+We can verify the program C executes safely by using multiple validation approaches. First, the simplest and most obvious approach is to run the program multiple times with different inputs, trying to cover basic to edge cases. This may detect the presence of errors, but it can't prove its absence.
+
+Another approach is to have code reviews whenever new code is written. This means that another person will review and run the proposed code, increasing the chances of finding wrong behaviors and bad written code. This also allows us to enforce the usage of good programming practies, that strongly reduce the existence of unsafe code.
+
+Besides, another approach is to use static code analysis tools. Those tools can, for example, detect unitialized variables that may result in a bad execution afterwards. 
+
+Last, it is also possible to provide a formal verification that the C program executes safely. In some companies, they use functional safety standards such as ISO 26262-6. However, the approach depends on the company needs, so there is not a unique way of ensuring safety. 
+
+
+The method kprintf is the same as a "printf" but on a kernel version. Since we don't have libC on bare-metal environment, we can't simply use "printf", thus kprintf was implemented. 
 
 
 References: 
@@ -147,4 +158,7 @@ https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedde
 https://en.wikipedia.org/wiki/.bss
 http://books.gigatux.nl/mirror/kerneldevelopment/0672327201/ch19lev1sec3.html
 https://www.geeksforgeeks.org/stack-top-c-stl/
+https://blog.regehr.org/archives/213
+https://www.mathworks.com/content/dam/mathworks/conference-or-academic-paper/how-to-prove-your-c-plus-plus-code-safe-secure.pdf
+
 
