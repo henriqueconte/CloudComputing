@@ -153,6 +153,32 @@ Last, it is also possible to provide a formal verification that the C program ex
 The method kprintf is the same as a "printf" but on a kernel version. Since we don't have libC on bare-metal environment, we can't simply use "printf", thus kprintf was implemented. 
 
 
+
+############ Week 1 Step 3
+
+UART, that stands for Universal Asynchronous Receiver-Transmitter, is a protocol allowing to send or receive bytes in an asynchronous serial communication. In that type of communication, data is transferred bit by bit with one line.
+
+UART is widely used for embedded systems and microcontrollers, and it uses two wires to send and receive. The two signals are called Transmitter and Receiver. A transmitter receives data from a controlling data bus in parallel form, and sends to another UART in serial form. Then, the second UART sends the data to another data bus in parallel form. 
+
+The information is transmitted in packets that contain a start bit (1 bit), a data frame (5 to 9 bits), parity bits (0 to 1 bits) and stop bits (1 to 2 bits). The start bit decides when the UART should start reading the data frame bits. The data frame contains the information from the package. The parity bits is used to identify if any data was modified during transmission, happening in case of electromagnetic interefence. The stop bits indicate the end of the package. 
+
+In addition, UARTs have registers used to configure communication parameters, like the communication speed and parity check. In that aspect, 8 bytes are used to access a UART's registers. The offsets are used to access the right register, because we always need a base address plus an offset. 
+
+Bit fields in C are variables with predefined width, and the easiest way to understand bit fields is with an example. Let's say we have the following structure:
+
+struct {
+    unsigned int age : 3;
+} Age; 
+
+Note the " : 3". Normally, the program would allocate 4 bytes for the variable "age", since it's a unsigned int. However, if we don't want to allocate that much memory for a variable, we can use bit fields to define the amount of bits we want to allocate to that variable. In that case, we use " : 3" to say that we want to allocate 3 bits for the variable age. That means we could only have ages from 0 to 7 - which is quite low -, but it's enough to understand the concept of bit fields.
+
+
+
+
+It has bit fields to...
+ 
+
+
 References: 
 https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedded_Development/embThe_linker_script.html
 https://en.wikipedia.org/wiki/.bss
@@ -160,5 +186,11 @@ http://books.gigatux.nl/mirror/kerneldevelopment/0672327201/ch19lev1sec3.html
 https://www.geeksforgeeks.org/stack-top-c-stl/
 https://blog.regehr.org/archives/213
 https://www.mathworks.com/content/dam/mathworks/conference-or-academic-paper/how-to-prove-your-c-plus-plus-code-safe-secure.pdf
+https://www.analog.com/en/analog-dialogue/articles/uart-a-hardware-communication-protocol.html
+https://www.lammertbies.nl/comm/info/serial-uart
+https://www.tutorialspoint.com/cprogramming/c_bit_fields.htm
+
+
+
 
 
