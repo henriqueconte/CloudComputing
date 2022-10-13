@@ -399,13 +399,17 @@ bus: main-system-bus
     len-db-clock = 0 (0x0)
     mmio 0000000010000000/0000000000001000
 
-To make QEMU emulate a second serial, first we need to change the QEMU_SERIAL on the Makefile. The original QEMU_SERIAL has a value of "-serial mon:stdio", which will locally connect the input and output. To create a telnet connection, we need to add the value " -serial telnet:localhost:4321,server,nowait" to QEMU_SERIAL. 
+To make QEMU emulate a second serial, first we need to change the QEMU_SERIAL on the Makefile. The original QEMU_SERIAL has a value of "-serial mon:stdio", which will run with with one serial line and one IDE disk. To create a telnet connection, we need to add the value " -serial telnet:localhost:4321,server,nowait" to QEMU_SERIAL. 
 
 Besides, on the "main.c" file we need to change the UART we will send the message. The initial UART is UART0, which is the QEMU console, so we need to change it to UART1, which will be the console we will connect to the 4321 port. 
 
-Then, when we run "make run" again, our QEMU will create a telnet connection on the port 4321. In another terminal, we run "telnet localhost 4321". Now, we will see the message "Zzzzz" being printed on the telnet terminal instead of the QEMU terminal - mission complete!
+Then, when we run "make run" again, our QEMU will create a telnet connection on the port 4321. In another terminal, we run "telnet localhost 4321". Now, we will see the message "Zzzzz" and the typed characeters being printed on the telnet terminal instead of the QEMU terminal - mission complete!
 
+In C, unsigned char is a character datatype where the variable uses all the 8 bits of memory, and it doesn't contain a sign bit. We can use it to get ASCII values from 0 to 255 range.
 
+When we type characters like 'a', 'b', 'A' and 'B' and we see their values on our telnet terminal. On the other hand, if we hit special keys like the left, right, up and down arrow, we won't see anything being printed on the terminal. This happens because the arrow keys don't have ASCII codes, because they didn't exist by the time ASCII codes where created. Therefore, if we wanted to send an arrow key information, we would need to manually encode them and send as a sequence of bytes.   
+
+If we type an arrow key without encoding it, the cursor will move on the telnet terminal instead of printing a value. 
 
 References: 
 https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedded_Development/embThe_linker_script.html
@@ -417,6 +421,8 @@ https://www.mathworks.com/content/dam/mathworks/conference-or-academic-paper/how
 https://www.analog.com/en/analog-dialogue/articles/uart-a-hardware-communication-protocol.html
 https://www.lammertbies.nl/comm/info/serial-uart
 https://www.tutorialspoint.com/cprogramming/c_bit_fields.htm
+https://www.geeksforgeeks.org/unsigned-char-in-c-with-examples/
+
 
 
 
