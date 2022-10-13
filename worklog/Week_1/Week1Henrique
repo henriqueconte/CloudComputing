@@ -153,6 +153,260 @@ Last, it is also possible to provide a formal verification that the C program ex
 The method kprintf is the same as a "printf" but on a kernel version. Since we don't have libC on bare-metal environment, we can't simply use "printf", thus kprintf was implemented. 
 
 
+
+############ Week 1 Step 3
+
+UART, that stands for Universal Asynchronous Receiver-Transmitter, is a protocol allowing to send or receive bytes in an asynchronous serial communication. In that type of communication, data is transferred bit by bit with one line.
+
+UART is widely used for embedded systems and microcontrollers, and it uses two wires to send and receive. The two signals are called Transmitter and Receiver. A transmitter receives data from a controlling data bus in parallel form, and sends to another UART in serial form. Then, the second UART sends the data to another data bus in parallel form. 
+
+The information is transmitted in packets that contain a start bit (1 bit), a data frame (5 to 9 bits), parity bits (0 to 1 bits) and stop bits (1 to 2 bits). The start bit decides when the UART should start reading the data frame bits. The data frame contains the information from the package. The parity bits is used to identify if any data was modified during transmission, happening in case of electromagnetic interefence. The stop bits indicate the end of the package. 
+
+In addition, UARTs have registers used to configure communication parameters, like the communication speed and parity check. In that aspect, 8 bytes are used to access a UART's registers. The offsets are used to access the right register, because we always need a base address plus an offset. 
+
+Bit fields in C are variables with predefined width, and the easiest way to understand bit fields is with an example. Let's say we have the following structure:
+
+struct {
+    unsigned int age : 3;
+} Age; 
+
+Note the " : 3". Normally, the program would allocate 4 bytes for the variable "age", since it's a unsigned int. However, if we don't want to allocate that much memory for a variable, we can use bit fields to define the amount of bits we want to allocate to that variable. In that case, we use " : 3" to say that we want to allocate 3 bits for the variable age. That means we could only have ages from 0 to 7 - which is quite low -, but it's enough to understand the concept of bit fields.
+ 
+The command "info qtree" from QEMU shows a tree view of how all the QEMU devices are By running the command "info qtree" on QEMU, we get the following result: 
+
+bus: main-system-bus
+  type System
+  dev: cfi.pflash01, id ""
+    drive = ""
+    num-blocks = 256 (0x100)
+    sector-length = 262144 (0x40000)
+    width = 4 (0x4)
+    device-width = 0 (0x0)
+    max-device-width = 0 (0x0)
+    big-endian = false
+    secure = false
+    id0 = 137 (0x89)
+    id1 = 24 (0x18)
+    id2 = 0 (0x0)
+    id3 = 0 (0x0)
+    name = "versatile.flash"
+    old-multiple-chip-handling = false
+    mmio 0000000034000000/0000000004000000
+  dev: pl041, id ""
+    gpio-out "sysbus-irq" 1
+    audiodev = "coreaudio"
+    nc_fifo_depth = 512 (0x200)
+    mmio 0000000010004000/0000000000001000
+  dev: versatile_i2c, id ""
+    mmio 0000000010002000/0000000000001000
+    bus: i2c
+      type i2c-bus
+      dev: ds1338, id ""
+        address = 104 (0x68)
+  dev: pl031, id ""
+    gpio-out "sysbus-irq" 1
+    migrate-tick-offset = true
+    mmio 00000000101e8000/0000000000001000
+  dev: pl181, id ""
+    gpio-out "card-inserted" 1
+    gpio-out "card-read-only" 1
+    gpio-out "sysbus-irq" 2
+    mmio 000000001000b000/0000000000001000
+    bus: sd-bus
+      type pl181-bus
+  dev: pl181, id ""
+    gpio-out "card-inserted" 1
+    gpio-out "card-read-only" 1
+    gpio-out "sysbus-irq" 2
+    mmio 0000000010005000/0000000000001000
+    bus: sd-bus
+      type pl181-bus
+      dev: sd-card, id ""
+        spec_version = 2 (0x2)
+        drive = "sd0"
+        spi = false
+  dev: pl110_versatile, id ""
+    gpio-in "" 1
+    gpio-out "sysbus-irq" 1
+    mmio 0000000010120000/0000000000001000
+  dev: pl061, id ""
+    gpio-in "" 8
+    gpio-out "" 8
+    gpio-out "sysbus-irq" 1
+    pullups = 255 (0xff)
+    pulldowns = 0 (0x0)
+    mmio 00000000101e7000/0000000000001000
+  dev: pl061, id ""
+    gpio-in "" 8
+    gpio-out "" 8
+    gpio-out "sysbus-irq" 1
+    pullups = 255 (0xff)
+    pulldowns = 0 (0x0)
+    mmio 00000000101e6000/0000000000001000
+  dev: pl061, id ""
+    gpio-in "" 8
+    gpio-out "" 8
+    gpio-out "sysbus-irq" 1
+    pullups = 255 (0xff)
+    pulldowns = 0 (0x0)
+    mmio 00000000101e5000/0000000000001000
+  dev: pl061, id ""
+    gpio-in "" 8
+    gpio-out "" 8
+    gpio-out "sysbus-irq" 1
+    pullups = 255 (0xff)
+    pulldowns = 0 (0x0)
+    mmio 00000000101e4000/0000000000001000
+  dev: sp804, id ""
+    gpio-out "sysbus-irq" 1
+    freq0 = 1000000 (0xf4240)
+    freq1 = 1000000 (0xf4240)
+    mmio 00000000101e3000/0000000000001000
+  dev: sp804, id ""
+    gpio-out "sysbus-irq" 1
+    freq0 = 1000000 (0xf4240)
+    freq1 = 1000000 (0xf4240)
+    mmio 00000000101e2000/0000000000001000
+  dev: pl080, id ""
+    gpio-out "sysbus-irq" 3
+    mmio 0000000010130000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 6
+    clock-in "clk" freq_hz=0 Hz
+    chardev = ""
+    migrate-clk = true
+    mmio 0000000010009000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 6
+    clock-in "clk" freq_hz=0 Hz
+    chardev = ""
+    migrate-clk = true
+    mmio 00000000101f3000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 6
+    clock-in "clk" freq_hz=0 Hz
+    chardev = ""
+    migrate-clk = true
+    mmio 00000000101f2000/0000000000001000
+  dev: pl011, id ""
+    gpio-out "sysbus-irq" 6
+    clock-in "clk" freq_hz=0 Hz
+    chardev = "serial0"
+    migrate-clk = true
+    mmio 00000000101f1000/0000000000001000
+  dev: smc91c111, id ""
+    gpio-out "sysbus-irq" 1
+    mac = "52:54:00:12:34:56"
+    netdev = "hub0port0"
+    mmio 0000000010010000/0000000000000010
+  dev: versatile_pci, id ""
+    gpio-out "sysbus-irq" 4
+    broken-irq-mapping = 0 (0x0)
+    x-config-reg-migration-enabled = true
+    bypass-iommu = false
+    mmio 0000000010001000/0000000000001000
+    mmio 0000000041000000/0000000001000000
+    mmio 0000000042000000/0000000001000000
+    mmio 0000000043000000/0000000100000000
+    mmio 0000000044000000/000000000c000000
+    mmio 0000000050000000/0000000010000000
+    mmio 0000000060000000/0000000010000000
+    bus: pci
+      type PCI
+      dev: lsi53c895a, id ""
+        gpio-out "" 1
+        addr = 0c.0
+        romfile = ""
+        romsize = 4294967295 (0xffffffff)
+        rombar = 1 (0x1)
+        multifunction = false
+        x-pcie-lnksta-dllla = true
+        x-pcie-extcap-init = true
+        failover_pair_id = ""
+        acpi-index = 0 (0x0)
+        class SCSI controller, addr 00:0c.0, pci id 1000:0012 (sub 0000:1000)
+        bar 0: i/o at 0xffffffffffffffff [0xfe]
+        bar 1: mem at 0xffffffffffffffff [0x3fe]
+        bar 2: mem at 0xffffffffffffffff [0x1ffe]
+        bus: scsi.0
+          type SCSI
+          dev: scsi-cd, id ""
+            drive = "scsi0-cd2"
+            backend_defaults = "auto"
+            logical_block_size = 512 (512 B)
+            physical_block_size = 512 (512 B)
+            min_io_size = 0 (0 B)
+            opt_io_size = 0 (0 B)
+            discard_granularity = 4096 (4 KiB)
+            write-cache = "auto"
+            share-rw = false
+            rerror = "auto"
+            werror = "auto"
+            ver = "2.5+"
+            serial = ""
+            vendor = "QEMU"
+            product = "QEMU CD-ROM"
+            device_id = "scsi0-cd2"
+            wwn = 0 (0x0)
+            port_wwn = 0 (0x0)
+            port_index = 0 (0x0)
+            max_io_size = 2147483647 (0x7fffffff)
+            scsi_version = 5 (0x5)
+            quirk_mode_page_apple_vendor = false
+            quirk_mode_sense_rom_use_dbd = false
+            quirk_mode_page_vendor_specific_apple = false
+            quirk_mode_page_truncated = false
+            channel = 0 (0x0)
+            scsi-id = 2 (0x2)
+            lun = 0 (0x0)
+      dev: versatile_pci_host, id ""
+        addr = 0b.0
+        romfile = ""
+        romsize = 4294967295 (0xffffffff)
+        rombar = 1 (0x1)
+        multifunction = false
+        x-pcie-lnksta-dllla = true
+        x-pcie-extcap-init = true
+        failover_pair_id = ""
+        acpi-index = 0 (0x0)
+        class Class 0b40, addr 00:0b.0, pci id 10ee:0300 (sub 1af4:1100)
+  dev: ps2-mouse, id ""
+    gpio-out "" 1
+  dev: pl050_mouse, id ""
+    gpio-in "ps2-input-irq" 1
+    gpio-out "sysbus-irq" 1
+    mmio 0000000010007000/0000000000001000
+  dev: ps2-kbd, id ""
+    gpio-out "" 1
+  dev: pl050_keyboard, id ""
+    gpio-in "ps2-input-irq" 1
+    gpio-out "sysbus-irq" 1
+    mmio 0000000010006000/0000000000001000
+  dev: versatilepb_sic, id ""
+    gpio-out "sysbus-irq" 32
+    gpio-in "" 32
+    mmio 0000000010003000/0000000000001000
+  dev: pl190, id ""
+    gpio-out "sysbus-irq" 2
+    gpio-in "" 32
+    mmio 0000000010140000/0000000000001000
+  dev: realview_sysctl, id ""
+    gpio-in "" 2
+    gpio-out "" 1
+    sys_id = 1090547716 (0x41007004)
+    proc_id = 33554432 (0x2000000)
+    len-db-voltage = 0 (0x0)
+    len-db-clock = 0 (0x0)
+    mmio 0000000010000000/0000000000001000
+
+To make QEMU emulate a second serial, first we need to change the QEMU_SERIAL on the Makefile. The original QEMU_SERIAL has a value of "-serial mon:stdio", which will locally connect the input and output. To create a telnet connection, we need to add the value " -serial telnet:localhost:4321,server,nowait" to QEMU_SERIAL. 
+
+Besides, on the "main.c" file we need to change the UART we will send the message. The initial UART is UART0, which is the QEMU console, so we need to change it to UART1, which will be the console we will connect to the 4321 port. 
+
+Then, when we run "make run" again, our QEMU will create a telnet connection on the port 4321. In another terminal, we run "telnet localhost 4321". Now, we will see the message "Zzzzz" being printed on the telnet terminal instead of the QEMU terminal - mission complete!
+
+
+
 References: 
 https://users.informatik.haw-hamburg.de/~krabat/FH-Labor/gnupro/7_GNUPro_Embedded_Development/embThe_linker_script.html
 https://en.wikipedia.org/wiki/.bss
@@ -160,5 +414,11 @@ http://books.gigatux.nl/mirror/kerneldevelopment/0672327201/ch19lev1sec3.html
 https://www.geeksforgeeks.org/stack-top-c-stl/
 https://blog.regehr.org/archives/213
 https://www.mathworks.com/content/dam/mathworks/conference-or-academic-paper/how-to-prove-your-c-plus-plus-code-safe-secure.pdf
+https://www.analog.com/en/analog-dialogue/articles/uart-a-hardware-communication-protocol.html
+https://www.lammertbies.nl/comm/info/serial-uart
+https://www.tutorialspoint.com/cprogramming/c_bit_fields.htm
+
+
+
 
 
