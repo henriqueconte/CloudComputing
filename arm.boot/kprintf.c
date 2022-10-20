@@ -69,6 +69,11 @@ void kprintf(const char *fmt, ...);
 
 int kvprintf(char const *fmt, void (*func)(int), int radix, va_list ap);
 
+void kputchar(int c) {
+	char character = c;
+	uart_send(UART1, character);
+}
+
 void kprintf(const char *fmt, ...) {
   /* http://www.pagetable.com/?p=298 */
   va_list ap;
