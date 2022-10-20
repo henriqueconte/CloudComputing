@@ -1,19 +1,40 @@
 #include "main.h"
 
+#define ROWS 25
+#define COLS 80
+#define COM_SIZE 100
+
 /**
  * This is the C entry point, upcalled once the hardware has been setup properly
  * in assembly language, see the reset.s file.
  */
 
+void clearScreen(void);
+
 int var1 = 0;
 int var2 = 0;
 int var3 = 4;
 
+
+void clearScreen(void) {
+    kprintf("%c%c%c%c", 0x1B, 0x5B, 0x32, 0x4A);
+    for (int i = 0; i < ROWS; i++) {
+        uart_send(UART0, 27);
+        uart_send(UART0, 91);
+        uart_send(UART0, 65);
+    }
+}
+
 void _start() {
   int i = 0;
   int count = 0;
+  char command[100];
+
+
   uart_send_string(UART0, "\nQuit with \"C-a c\" and then type in \"quit\".\n");
   uart_send_string(UART0, "\nHello world!\n");
+
+  clearScreen();
 
   while (1) {
     unsigned char c;
@@ -28,6 +49,7 @@ void _start() {
         count = 0;
       }
     }
+
     if (c == '\r')
       uart_send(UART0, '\n');
 

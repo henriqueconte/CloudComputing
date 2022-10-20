@@ -71,7 +71,9 @@ int kvprintf(char const *fmt, void (*func)(int), int radix, va_list ap);
 
 void kputchar(int c) {
 	char character = c;
-	uart_send(UART1, character);
+
+	// Change to UART1 if the goal is to send to telnet terminal.
+	uart_send(UART0, character);
 }
 
 void kprintf(const char *fmt, ...) {
