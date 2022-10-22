@@ -16,7 +16,6 @@ int var1 = 0;
 int var2 = 0;
 int var3 = 4;
 
-
 void clearScreen(void) {
     kprintf("%c%c%c%c", 0x1B, 0x5B, 0x32, 0x4A);
     for (int i = 0; i < ROWS; i++) {
@@ -37,10 +36,6 @@ void _start() {
     command[i] = '\0';
   }
 
-  for (int i = 0; i < 100; i++) {
-    kprintf("%c", command[i]);
-  }
-
   uart_send_string(UART0, "\nQuit with \"C-a c\" and then type in \"quit\".\n");
   uart_send_string(UART0, "\nHello world!\n");
 
@@ -59,6 +54,8 @@ void _start() {
         count = 0;
       }
     }
+
+    wfi();
 
     if (c == '\r')
       uart_send(UART0, '\n');

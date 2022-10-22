@@ -1,0 +1,6 @@
+# Cloud Computing
+## Henrique Figueiredo Conte
+
+### Week 2 step 1
+
+First, to uderstand interruptions, we have to go to the PrimeCell PL011 Technical Reference Manual. UART's have eleven maskable interrupts that are combined to produce six interrupt outputs. To enable or disable individual interrupts, we can set the right mask bit HIGH to enable the interrupt. 
