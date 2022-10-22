@@ -1,4 +1,5 @@
 #include "main.h"
+#include "parse_string.h"
 
 #define ROWS 25
 #define COLS 80
@@ -24,12 +25,21 @@ void clearScreen(void) {
         uart_send(UART0, 65);
     }
 }
-
+ 
 void _start() {
   int i = 0;
   int count = 0;
-  char command[100];
 
+  char command[100];
+  int commandCount = 0;
+
+  for (int i = 0; i < 100; i++) {
+    command[i] = '\0';
+  }
+
+  for (int i = 0; i < 100; i++) {
+    kprintf("%c", command[i]);
+  }
 
   uart_send_string(UART0, "\nQuit with \"C-a c\" and then type in \"quit\".\n");
   uart_send_string(UART0, "\nHello world!\n");
@@ -53,6 +63,28 @@ void _start() {
     if (c == '\r')
       uart_send(UART0, '\n');
 
+    // If user hits enter
+    if (c == 13) {
+
+      // If command is reset, cleans screen
+      if (compareStrings(command, "reset") == 1) {
+        clearScreen();
+      } else if (compareStrings(command, "echo") == 1) { // If command is echo, prints echo
+        kprintf("%s", command);
+      }
+
+      // Cleans command
+      for (int i = 0; i < commandCount; i++) {
+        command[i] = '\0';
+      }
+      commandCount = 0;
+
+    } else {
+      command[commandCount] = c;
+      commandCount += 1;
+    }
+
+    kprintf("%c", c);
     uart_send(UART1, c);
   }
 }

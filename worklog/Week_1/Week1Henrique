@@ -419,7 +419,11 @@ First, to clear the screen, I used kprintf to print characters to clean the scre
 
 Then, tu put the cursor at the top-left corner, I first discovered what is the sequence of bytes read by my computer when receiving a top arrow. To do this, I used kprintf("%d", c) to discover the number, and that gave me 279165. This mean that the sequence is 27, 91 and 65. Thus, if I use uart_send to send three numbers, and I send 27 91 and 65 in sequence, this will be interpreted as a top arrow by the terminal. Finally, I put that sequence of uart_send inside a for loop and iterated it by the default amount of lines from the terminal (25). 
 
+The next step is to have the ability to write commands in the command line. First, to be able to write commands, I declared an empty char array with size 100. Then, for every key pressed by the user, I save the character in this array. Finally, to read the information from the array, I verify if the pressed key was "enter" (13), and then compare the current string with the strings "reset" and "echo".
 
+To compare the strings, I created another class to encapsulate the logic of string comparation. Since we couldn't use "string.h" method "strcmp", I am comparing the strings manually. Since it's an obvious but laborious code, I just searched on the internet an algorithm to do it. 
+
+Being able to detect the written string was "reset",  I called again the method to clean the screen. If the written string is "echo", I print it with kprintf and continue the program. In every case, when "enter" is pressed, I reset the command and go to a new line.
 
 
 
@@ -435,6 +439,8 @@ https://www.lammertbies.nl/comm/info/serial-uart
 https://www.tutorialspoint.com/cprogramming/c_bit_fields.htm
 https://www.geeksforgeeks.org/unsigned-char-in-c-with-examples/
 https://stackoverflow.com/questions/60293014/how-to-clear-screen-of-minicom-terminal-using-serial-uart
+https://www.geeksforgeeks.org/c-program-to-compare-two-strings-without-using-strcmp-function/
+
 
 
 
