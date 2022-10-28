@@ -3,4 +3,14 @@
 
 ### Week 2 step 1
 
-First, to uderstand interruptions, we have to go to the PrimeCell PL011 Technical Reference Manual. UART's have eleven maskable interrupts that are combined to produce six interrupt outputs. To enable or disable individual interrupts, we can set the right mask bit HIGH to enable the interrupt. 
+First, to uderstand interruptions, we have to go to the PrimeCell PL011 Technical Reference Manual. UART's have eleven maskable interrupts that are combined to produce six interrupt outputs. To enable or disable individual interrupts, we can set the right mask bit HIGH to enable the interrupt. In the file uart-irqs.h, we have a translation from the PrimeCell PL011 Technical Reference Manual, so it's easier to check directly uart-irqs.h to see which interruption to use.
+
+
+The first step will be to implement wfi(). To do that, ...
+
+
+Then we should adapt "uart_receive" to use the circular buffer "rxcb". To do that, ...
+
+Afterwards, we should adapt "uart_send" to use the circular buffer "txcb". To do that, ...
+
+I will take the Toussaint break now to travel and then I will be back to continue working in this complicated project.
