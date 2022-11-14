@@ -15,6 +15,7 @@ void clearScreen(void);
 int var1 = 0;
 int var2 = 0;
 int var3 = 4;
+struct cb *rx_cb;
 
 void clearScreen(void) {
     kprintf("%c%c%c%c", 0x1B, 0x5B, 0x32, 0x4A);
@@ -55,7 +56,7 @@ void _start() {
       }
     }
 
-    wfi();
+    // wfi();
 
     if (c == '\r')
       uart_send(UART0, '\n');
@@ -76,6 +77,10 @@ void _start() {
       }
       commandCount = 0;
 
+    } else if (c == 127) { // If user hits delete
+      kputchar('\b');
+      kputchar(' ');
+      kputchar('\b');
     } else {
       command[commandCount] = c;
       commandCount += 1;
