@@ -1,5 +1,8 @@
 #include "main.h"
+#include "vic.h"
 #include "parse_string.h"
+#include "interruptions.h"
+#include "cb.h"
 
 #define ROWS 25
 #define COLS 80
@@ -22,7 +25,6 @@ void getCommand(char *line);
 int var1 = 0;
 int var2 = 0;
 int var3 = 4;
-struct cb *rx_cb;
 
 // Echo command
 char exctractedCommand[COM_SIZE];
@@ -119,6 +121,7 @@ void _start() {
 
   char command[100];
   int commandCount = 0;
+  void *cookie;  
 
   for (int i = 0; i < 100; i++) {
     command[i] = '\0';
@@ -129,33 +132,36 @@ void _start() {
 
   clearScreen();
 
+  // Setups vic
+  vic_setup();
+
+  // Enables IRQ at vic
+  vic_irq_enable(UART0_IRQ, receiveInterruption, cookie);
+  initCircularBuffers();
+
+  // Enables FIFO queues, both rx-queue and tx-queue.
+  uint16_t lcr = *(uint16_t*) (UART0 + CUARTLCR_H);
+  lcr |= CUARTLCR_H_FEN;
+  *(uint16_t*) (UART0 + CUARTLCR_H) = lcr;
+
+  unsigned int *uartImsc = (unsigned int*) (UART0 + UART_IMSC);
+  *uartImsc = UART_IMSC_RXIM | UART_IMSC_TXIM | UART_IMSC_RTIM;
+
+  vic_enable();
+
   while (1) {
     unsigned char c;
     while (0 == uart_receive(UART0, &c)) {
-      // friendly reminder that you are polling and therefore spinning...
-      // not good for the planet! But until we introduce interrupts,
-      // there is nothing you can do about it... except comment out
-      // this annoying code ;-)
-      count++;
-      if (count > 10000000) {
-        // uart_send_string(UART1, "\n\rZzzz....\n\r");
-        count = 0;
-      }
+      wfi();
     }
-
-    // wfi();
-
     if (c == '\r')
       uart_send(UART0, '\n');
 
-    // kprintf("%d", c);
     // If user hits enter
     if (c == 13) {
-
       saveCommand(command);
       getCommand(command);
 
-      
       // If command is reset, cleans screen
       if (compareStrings(command, "reset") == 1) {
         clearScreen();
@@ -209,6 +215,7 @@ void _start() {
     if (isSpecialChar == 0) {
       kprintf("%c", c);
     }
+
     uart_send(UART1, c);
   }
 }

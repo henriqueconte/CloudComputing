@@ -1,5 +1,9 @@
 {
     "files.associations": {
-        "main.h": "c"
+        "main.h": "c",
+        "interruptions.h": "c",
+        "cb.h": "c",
+        "uart.h": "c",
+        "board.h": "c"
     }
 }
