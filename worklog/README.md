@@ -2,7 +2,7 @@
 
 This report is for the Cloud Computing course at ENSIMAG. The project notes were divided in two parts (Week1Notes and Week2Notes).  
 
-For a better visualisation of this README, please read it on Github (ADD LINK HERE!!) HERE!! HERE!! HERE!! HERE!! HERE!! HERE!! HERE!!
+For a better visualisation of this README, please read it on my Github (https://github.com/henriqueconte/CloudComputing/tree/Week2Step1/worklog).
 
 ## Testing the project
 
