@@ -182,17 +182,23 @@ void _start() {
       was91Pressed = 1;
       command[commandCount] = c;
       commandCount += 1;
-    } else if (c == 65) {
+    } else if (c == 65) { // Up arrow
       if (was27Pressed == 1 && was91Pressed == 1) { // If 27 and 91 were detected before a 65, then we have a up arrow key.
-        // kprintf("seta para cima");
         isSpecialChar = 1;
         getPreviousCommand(ARROW_UP);
       } else {
         command[commandCount] = c;
         commandCount += 1;
       }
-    }
-    else {
+    } else if (c == 66) { // Down arrow
+      if (was27Pressed == 1 && was91Pressed == 1) {
+        isSpecialChar = 1;
+        getPreviousCommand(ARROW_DOWN);
+      } else {
+        command[commandCount] = c;
+        commandCount += 1;
+      }
+    } else {
       was27Pressed = 0;
       was91Pressed = 0;
       isSpecialChar = 0;
