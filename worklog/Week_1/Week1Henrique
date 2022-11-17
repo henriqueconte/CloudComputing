@@ -417,7 +417,7 @@ If we type an arrow key without encoding it, the cursor will move on the telnet 
 
 First, to clear the screen, I used kprintf to print characters to clean the screen. I found a suggestion of characters sequence on StackOverflow (https://stackoverflow.com/questions/60293014/how-to-clear-screen-of-minicom-terminal-using-serial-uart) and used it.
 
-Then, tu put the cursor at the top-left corner, I first discovered what is the sequence of bytes read by my computer when receiving a top arrow. To do this, I used kprintf("%d", c) to discover the number, and that gave me 279165. This mean that the sequence is 27, 91 and 65. Thus, if I use uart_send to send three numbers, and I send 27 91 and 65 in sequence, this will be interpreted as a top arrow by the terminal. Finally, I put that sequence of uart_send inside a for loop and iterated it by the default amount of lines from the terminal (25). 
+Then, to put the cursor at the top-left corner, I first discovered what is the sequence of bytes read by my computer when receiving a top arrow. To do this, I used kprintf("%d", c) to discover the number, and that gave me 279165. This mean that the sequence is 27, 91 and 65. Thus, if I use uart_send to send three numbers, and I send 27 91 and 65 in sequence, this will be interpreted as a top arrow by the terminal. Finally, I put that sequence of uart_send inside a for loop and iterated it by the default amount of lines from the terminal (25). 
 
 The next step is to have the ability to write commands in the command line. First, to be able to write commands, I declared an empty char array with size 100. Then, for every key pressed by the user, I save the character in this array. Finally, to read the information from the array, I verify if the pressed key was "enter" (13), and then compare the current string with the strings "reset" and "echo".
 
@@ -425,6 +425,7 @@ To compare the strings, I created another class to encapsulate the logic of stri
 
 Being able to detect the written string was "reset",  I called again the method to clean the screen. If the written string is "echo", I print it with kprintf and continue the program. In every case, when "enter" is pressed, I reset the command and go to a new line.
 
+In order to delete characters when delete is pressed, I had to detect when the key "127" (delete) was pressed, move the cursor back with the command '\b' and write an empty char. 
 
 
 References: 
