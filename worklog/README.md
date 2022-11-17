@@ -29,7 +29,7 @@ The project was developed in different branches separated by step of development
 However, I have to confess that there were some code changes on the Week2Step1 branch that should have been implemented on the branches related to the Week1, like fixing problems with  `echo` and command line history.  
 
 That happens because I discovered some bugs in those features after starting the Week2, and I didn't want to go back to the previous branches, make the change there, merge them to main and finally merge them to Week2. Therefore, I just made the changes directly at Week2Step1, that saved me time. 
-
+ 
 Besides, there are tags that mark the last commit of each branch, called: 
 
 * week1.step1  
