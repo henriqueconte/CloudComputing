@@ -50,30 +50,37 @@ void saveCommand(char *command) {
     int i=0;
     while(i < COM_SIZE && command[i] != '\0') {
         commandHistory[historyCount][i] = command[i];
-        command[i] = '\0';
+        // command[i] = '\0';
         i++;
     }
     historyCount = (historyCount + 1) % 20;
-    historySearchCount = (historySearchCount + 1) % 20;
+    historySearchCount = historyCount;
 }
 
 // https://www.reddit.com/r/C_Programming/comments/502xun/how_do_i_clear_a_line_on_console_in_c/
 void clearLine(void) {
-  // kprintf("\x1b[1F");
   kprintf("\x1b[2K");
   for (int i = 0; i < COM_SIZE; i++) {
       kputchar('\b');
       kputchar(' ');
       kputchar('\b');
   }
-  // kprintf("\n\r");
 }
 
 void getPreviousCommand(int arrowDirection) {
     if (arrowDirection == ARROW_UP) {
       clearLine();
-      char *lastCommand = commandHistory[historyCount - 1];
-      kprintf("%s", lastCommand);
+      if (historySearchCount > 0) {
+        historySearchCount--;
+        kprintf("%s", commandHistory[historySearchCount]);
+      }
+    }
+    else if (arrowDirection == ARROW_DOWN) {
+      clearLine();
+      if (historySearchCount + 1 < historyCount) {
+        historySearchCount++;
+        kprintf("%s", commandHistory[historySearchCount]);
+      }
     }
 }
 
@@ -145,9 +152,10 @@ void _start() {
     // If user hits enter
     if (c == 13) {
 
+      saveCommand(command);
       getCommand(command);
 
-      saveCommand(*command);
+      
       // If command is reset, cleans screen
       if (compareStrings(command, "reset") == 1) {
         clearScreen();
