@@ -49,9 +49,9 @@ The project is almost done. You can use the console with its basic features, suc
 
 You can verify the working features by following the *Testing the project* section. On the file "Week1Notes", I gave all my answers related to the theoretical questions on the Week1 assignment. 
 
-![Echo demostration](/worklog/echo.jpeg?raw=true "Echo demonstration")
-![Before reseting](/worklog/multipleCommands.jpeg?raw=true "Before reseting")
-![After reseting](/worklog/reset.jpeg?raw=true "After reseting")
+![Echo demostration](/worklog/images/echo.jpeg?raw=true "Echo demonstration")
+![Before reseting](/worklog/images/multipleCommands.jpeg?raw=true "Before reseting")
+![After reseting](/worklog/images/reset.jpeg?raw=true "After reseting")
 
 Besides, regarding the Week 2 assignments, I implemented the use of wfi() instead of the busy waiting, and then interruptions to read characters only when we have an input. 
 
