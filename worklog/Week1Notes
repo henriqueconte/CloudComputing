@@ -417,14 +417,19 @@ If we type an arrow key without encoding it, the cursor will move on the telnet 
 
 First, to clear the screen, I used kprintf to print characters to clean the screen. I found a suggestion of characters sequence on StackOverflow (https://stackoverflow.com/questions/60293014/how-to-clear-screen-of-minicom-terminal-using-serial-uart) and used it.
 
-Then, tu put the cursor at the top-left corner, I first discovered what is the sequence of bytes read by my computer when receiving a top arrow. To do this, I used kprintf("%d", c) to discover the number, and that gave me 279165. This mean that the sequence is 27, 91 and 65. Thus, if I use uart_send to send three numbers, and I send 27 91 and 65 in sequence, this will be interpreted as a top arrow by the terminal. Finally, I put that sequence of uart_send inside a for loop and iterated it by the default amount of lines from the terminal (25). 
+Then, to put the cursor at the top-left corner, I first discovered what is the sequence of bytes read by my computer when receiving a top arrow. To do this, I used kprintf("%d", c) to discover the number, and that gave me 279165. This mean that the sequence is 27, 91 and 65. Thus, if I use uart_send to send three numbers, and I send 27 91 and 65 in sequence, this will be interpreted as a top arrow by the terminal. Finally, I put that sequence of uart_send inside a for loop and iterated it by the default amount of lines from the terminal (25). 
 
 The next step is to have the ability to write commands in the command line. First, to be able to write commands, I declared an empty char array with size 100. Then, for every key pressed by the user, I save the character in this array. Finally, to read the information from the array, I verify if the pressed key was "enter" (13), and then compare the current string with the strings "reset" and "echo".
 
 To compare the strings, I created another class to encapsulate the logic of string comparation. Since we couldn't use "string.h" method "strcmp", I am comparing the strings manually. Since it's an obvious but laborious code, I just searched on the internet an algorithm to do it. 
 
-Being able to detect the written string was "reset",  I called again the method to clean the screen. If the written string is "echo", I print it with kprintf and continue the program. In every case, when "enter" is pressed, I reset the command and go to a new line.
+Being able to detect the written string was "reset",  I called again the method to clean the screen. If the written string is "echo", I parse the current line to extract the command "echo" and the arguments received by "echo" (Ex: "echo food"). In that case, I filter "food" and print it with kprintf and continue the program. In every case, when "enter" is pressed, I reset the command and go to a new line.
 
+In order to delete characters when backspace is pressed, I had to detect when the key "127" (backspace) was pressed, move the cursor back with the command '\b' and write an empty char. I didn't implement the delete character because my computer (Macbook Pro 2018) doesn't have this key. 
+
+The last implemented feature was a history of the last 20 lines entered. To do that, I created a matrix "char commandHistory[HISTORY_SIZE][COM_SIZE]". Each line is a command, and each column is a letter from the command. Then, every time the user hits "enter", I save the current command in the commandHistory variable. Finally, I keep a counter on the number of commands saved. 
+
+To scroll on the commands with the arrow up and down, I first had to do a simple Finite State Machine (FSM) to identify whenever the up and down arrows were pressed. This happens because the arrows are represented by a sequence of characeters (like 27-91-65 for up arrow). Then, after detecting an arrow was pressed, I clean the current line from the console and retrieve the command from our "commandHistory" variable. Then, I print the command there and consider it as my command. 
 
 
 References: 

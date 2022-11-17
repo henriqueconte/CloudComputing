@@ -1,0 +1,15 @@
+# Cloud Computing
+## Henrique Figueiredo Conte
+
+### Week 2 step 1
+
+First, to uderstand interruptions, we have to go to the PrimeCell PL011 Technical Reference Manual. UART's have eleven maskable interrupts that are combined to produce six interrupt outputs. To enable or disable individual interrupts, we can set the right mask bit HIGH to enable the interrupt. In the file uart-irqs.h, we have a translation from the PrimeCell PL011 Technical Reference Manual, so it's easier to check directly uart-irqs.h to see which interruption to use.
+
+
+The first step will be to use wfi(). To do that, I removed the busy wait and added wfi instead. That made the program freeze, since we don't have interruptions to break the core halt.
+
+In order to break the core halt, I had to enable the FIFO queue. This was made by first enabling VIC and IRQ. They allow the system to have interruptions, and then I created methods to identify the type of the interruption and handle it accordingly. Finally, to enable the FIFO queue itself, I used the code provided by the teacher. 
+
+Afterwards, we should adapt "uart_send" to use the circular buffer "txcb". To do that, ...
+
+I will take the Toussaint break now to travel and then I will be back to continue working in this complicated project.
